@@ -2,66 +2,150 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bolsa de Trabajo CDI</title>
+    <title>Bolsa de Trabajo CDI - Uandes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
-        header { background: #004a99; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #004a99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        h3 { margin-top: 0; color: #004a99; }
-        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100; justify-content:center; align-items:center; display:none; }
-        .modal-content { background:white; padding:30px; width:80%; max-width:600px; border-radius:15px; margin: 10% auto; position: relative; }
-        .btn { background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; }
+        :root { --uandes-blue: #004a99; --uandes-light: #f0f2f5; --success-green: #28a745; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--uandes-light); margin: 0; padding: 20px; color: #333; }
+        
+        header { background: var(--uandes-blue); color: white; padding: 30px; text-align: center; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1300px; margin: auto; }
+        
+        /* Tarjetas */
+        .card { background: white; padding: 25px; border-radius: 15px; border-top: 6px solid var(--uandes-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: 0.3s; position: relative; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
+        .card img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 15px; border: 1px solid #eee; padding: 5px; border-radius: 8px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--uandes-blue); font-size: 1.4em; }
+        .card .tag { display: inline-block; background: #eef4ff; color: var(--uandes-blue); padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: bold; margin-bottom: 10px; }
+
+        /* Modal Ultra Profesional */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; backdrop-filter: blur(5px); overflow-y: auto; }
+        .modal-content { background:white; margin: 2% auto; padding: 40px; width: 90%; max-width: 850px; border-radius: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .modal-header img { width: 100px; height: 100px; object-fit: contain; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; background: #f9f9f9; padding: 20px; border-radius: 12px; }
+        
+        .close { position: absolute; right: 25px; top: 15px; font-size: 35px; cursor: pointer; color: #aaa; }
+        .info-label { font-weight: bold; color: var(--uandes-blue); text-transform: uppercase; font-size: 0.8em; display: block; margin-bottom: 4px; }
+        
+        .description-box { line-height: 1.6; white-space: pre-line; margin-bottom: 30px; }
+        .btn-postular { display: block; background: var(--success-green); color: white; text-align: center; padding: 18px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 1.2em; transition: 0.3s; }
+        .btn-postular:hover { background: #218838; transform: scale(1.02); }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Bolsa de Trabajo CDI</h1>
-        <p>Ingeniería Uandes</p>
+        <h1 style="margin:0;">Bolsa de Trabajo CDI</h1>
+        <p style="margin:10px 0 0 0; opacity: 0.9;">Centro de Alumnos de Ingeniería - Universidad de los Andes</p>
     </header>
-    <div id="ofertas" class="grid">Cargando ofertas reales...</div>
+
+    <div id="ofertas" class="grid">Cargando oportunidades...</div>
 
     <div id="modal" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="m-empresa"></h2>
-            <p id="m-desc"></p>
-            <a id="m-link" href="#" target="_blank" class="btn">Postular ahora</a>
-            <p style="font-size: 0.8em; color: #999; margin-top: 20px;">Haz clic fuera para cerrar</p>
+            <span class="close" onclick="document.getElementById('modal').style.display='none'">&times;</span>
+            
+            <div class="modal-header">
+                <img id="m-logo" src="" alt="Logo">
+                <div>
+                    <h2 id="m-empresa" style="margin:0; color:var(--uandes-blue);"></h2>
+                    <h3 id="m-tipo" style="margin:5px 0; font-weight:normal; color:#666;"></h3>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div>
+                    <span class="info-label">Área</span>
+                    <span id="m-area"></span>
+                </div>
+                <div>
+                    <span class="info-label">Modalidad</span>
+                    <span id="m-modalidad"></span>
+                </div>
+                <div>
+                    <span class="info-label">Ubicación</span>
+                    <span id="m-ubicacion"></span>
+                </div>
+                <div>
+                    <span class="info-label">Perfiles buscados</span>
+                    <span id="m-perfiles"></span>
+                </div>
+            </div>
+
+            <span class="info-label">Descripción del Cargo</span>
+            <div class="description-box" id="m-desc"></div>
+
+            <span class="info-label">Requisitos</span>
+            <div class="description-box" id="m-req" style="margin-bottom:20px;"></div>
+
+            <div id="box-postulacion" style="border-top: 2px solid #eee; padding-top: 20px;">
+                <span class="info-label">Cómo postular</span>
+                <p id="m-instrucciones" style="margin-bottom: 20px;"></p>
+                <a id="m-link" href="#" target="_blank" class="btn-postular">Postular Ahora Externamente</a>
+                <p id="m-correo-wrap" style="text-align:center; margin-top:10px; font-size:0.9em;">
+                    O envía tu CV a: <strong id="m-correo"></strong>
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
         const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwWDw8GNI--K8ZBOH9T0MqalLG2ogne5ihiFCqwiy6rK7HgEH4niXPB53T0cr_U6JgA8Or3LnNqbsO/pub?output=csv';
 
-        fetch(url)
-            .then(res => res.text())
-            .then(csv => {
-                const filas = csv.split('\n').slice(1);
+        Papa.parse(url, {
+            download: true,
+            header: true,
+            complete: function(results) {
                 let html = '';
-                filas.forEach(linea => {
-                    const c = linea.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // Split inteligente para comas
-                    if (c.length > 1) {
-                        const empresa = c[0].replace(/"/g, "");
-                        const cargo = c[1].replace(/"/g, "");
-                        const desc = c[4] ? c[4].replace(/"/g, "") : "";
-                        const link = c[10] ? c[10].replace(/"/g, "").trim() : "#";
-                        
+                results.data.forEach(f => {
+                    if(f["Empresa"]) {
                         html += `
-                            <div class="card" onclick="ver('${empresa}', \`${desc}\`, '${link}')">
-                                <h3>${empresa}</h3>
-                                <p><strong>${cargo}</strong></p>
-                                <p style="color: #004a99">Ver detalles →</p>
-                            </div>`;
+                        <div class="card" onclick="ver('${f['Empresa']}', '${f['Logo (link imagen)']}', '${f['Área']}', '${f['Tipo oportunidades']}', \`${f['Descripción']}\`, '${f['Perfiles buscados']}', '${f['Modalidad']}', '${f['Ubicación']}', \`${f['Requisitos']}\`, \`${f['Cómo postular']}\`, '${f['Link postulación']}', '${f['Correo']}')">
+                            <img src="${f['Logo (link imagen)'] || 'https://via.placeholder.com/100'}" alt="Logo">
+                            <span class="tag">${f['Tipo oportunidades']}</span>
+                            <h3>${f['Empresa']}</h3>
+                            <p><strong>Área:</strong> ${f['Área']}</p>
+                            <p><strong>Modalidad:</strong> ${f['Modalidad']}</p>
+                            <div style="margin-top:15px; color:var(--uandes-blue); font-weight:bold;">Ver detalles →</div>
+                        </div>`;
                     }
                 });
                 document.getElementById('ofertas').innerHTML = html;
-            });
+            }
+        });
 
-        function ver(emp, desc, link) {
+        function ver(emp, logo, area, tipo, desc, perf, mod, ubi, req, inst, link, correo) {
             document.getElementById('m-empresa').innerText = emp;
+            document.getElementById('m-logo').src = logo || 'https://via.placeholder.com/100';
+            document.getElementById('m-tipo').innerText = tipo;
+            document.getElementById('m-area').innerText = area;
+            document.getElementById('m-modalidad').innerText = mod;
+            document.getElementById('m-ubicacion').innerText = ubi;
+            document.getElementById('m-perfiles').innerText = perf;
             document.getElementById('m-desc').innerText = desc;
-            document.getElementById('m-link').href = link;
+            document.getElementById('m-req').innerText = req;
+            document.getElementById('m-instrucciones').innerText = inst;
+            
+            // Link de postulación
+            const btn = document.getElementById('m-link');
+            if(link && link !== "#") {
+                btn.href = link;
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+
+            // Correo
+            const mailWrap = document.getElementById('m-correo-wrap');
+            if(correo && correo.includes('@')) {
+                document.getElementById('m-correo').innerText = correo;
+                mailWrap.style.display = "block";
+            } else {
+                mailWrap.style.display = "none";
+            }
+
             document.getElementById('modal').style.display = 'block';
         }
     </script>
