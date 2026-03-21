@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bolsa de Trabajo CDI</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
+        header { background: #004a99; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; border-top: 5px solid #004a99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        h3 { margin-top: 0; color: #004a99; }
+        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100; justify-content:center; align-items:center; display:none; }
+        .modal-content { background:white; padding:30px; width:80%; max-width:600px; border-radius:15px; margin: 10% auto; position: relative; }
+        .btn { background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bolsa de Trabajo CDI</h1>
+        <p>Ingeniería Uandes</p>
+    </header>
+    <div id="ofertas" class="grid">Cargando ofertas reales...</div>
+
+    <div id="modal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 id="m-empresa"></h2>
+            <p id="m-desc"></p>
+            <a id="m-link" href="#" target="_blank" class="btn">Postular ahora</a>
+            <p style="font-size: 0.8em; color: #999; margin-top: 20px;">Haz clic fuera para cerrar</p>
+        </div>
+    </div>
+
+    <script>
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwWDw8GNI--K8ZBOH9T0MqalLG2ogne5ihiFCqwiy6rK7HgEH4niXPB53T0cr_U6JgA8Or3LnNqbsO/pub?output=csv';
+
+        fetch(url)
+            .then(res => res.text())
+            .then(csv => {
+                const filas = csv.split('\n').slice(1);
+                let html = '';
+                filas.forEach(linea => {
+                    const c = linea.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // Split inteligente para comas
+                    if (c.length > 1) {
+                        const empresa = c[0].replace(/"/g, "");
+                        const cargo = c[1].replace(/"/g, "");
+                        const desc = c[4] ? c[4].replace(/"/g, "") : "";
+                        const link = c[10] ? c[10].replace(/"/g, "").trim() : "#";
+                        
+                        html += `
+                            <div class="card" onclick="ver('${empresa}', \`${desc}\`, '${link}')">
+                                <h3>${empresa}</h3>
+                                <p><strong>${cargo}</strong></p>
+                                <p style="color: #004a99">Ver detalles →</p>
+                            </div>`;
+                    }
+                });
+                document.getElementById('ofertas').innerHTML = html;
+            });
+
+        function ver(emp, desc, link) {
+            document.getElementById('m-empresa').innerText = emp;
+            document.getElementById('m-desc').innerText = desc;
+            document.getElementById('m-link').href = link;
+            document.getElementById('modal').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
