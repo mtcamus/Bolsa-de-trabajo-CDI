@@ -21,75 +21,48 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
         }
 
-        /* --- HEADER DISEÑO MODERNO --- */
+        /* --- HEADER --- */
         .page-header {
             background-color: var(--white);
-            padding: 60px 20px;
+            padding: 50px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
             border-bottom: 1px solid #eaeaea;
         }
 
-        .page-header::before, .page-header::after {
-            content: '';
-            position: absolute;
-            background-color: var(--accent-light);
-            border-radius: 50%;
-            opacity: 0.4;
-            z-index: 0;
-        }
-        .page-header::before { width: 250px; height: 250px; top: -80px; left: -80px; }
-        .page-header::after { width: 180px; height: 180px; bottom: -40px; right: 8%; }
-
-        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
-
-        .logo-cdi {
-            max-width: 120px;
-            margin-bottom: 15px;
+        .page-header::before {
+            content: ''; position: absolute; background: var(--accent-light);
+            width: 250px; height: 250px; border-radius: 50%;
+            top: -100px; left: -100px; opacity: 0.4;
         }
 
-        .tag-oficial {
-            display: inline-block;
-            background-color: #e8eaed;
-            color: #5f6368;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
+        .header-content { position: relative; z-index: 1; }
+
+        .logo-cdi { max-width: 140px; margin-bottom: 15px; }
 
         h1.main-title {
-            font-size: 3.2em;
-            font-weight: 800;
-            margin: 0 0 15px 0;
-            color: var(--primary-dark);
-            letter-spacing: -1px;
-            line-height: 1.1;
+            font-size: 3em; font-weight: 800; margin: 10px 0;
+            color: var(--primary-dark); letter-spacing: -1px;
         }
 
-        .sub-title {
-            font-size: 1.1em;
-            color: var(--text-muted);
-            max-width: 550px;
-            margin: 0 auto;
-        }
-
-        /* --- GRILLA --- */
+        /* --- GRID DE TARJETAS (CARDS) --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .grid-ofertas { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        
+        .grid-ofertas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
 
         .card-oferta {
             background: var(--white);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: 0.3s;
             cursor: pointer;
             border: 1px solid #f0f0f0;
@@ -98,64 +71,65 @@
         }
 
         .card-oferta:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
         }
 
         .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .empresa-logo-card { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; background: #fff; }
+        .empresa-logo-card { width: 55px; height: 55px; object-fit: contain; border-radius: 10px; border: 1px solid #eee; }
         
-        .empresa-nombre-card { font-weight: 700; font-size: 1em; color: var(--text-main); margin: 0; }
-        .area-tag-card { font-size: 0.75em; color: var(--primary-dark); background: #eef2f6; padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-top: 4px; display: inline-block; }
+        .empresa-nombre-card { font-weight: 700; font-size: 1.1em; color: var(--text-main); margin: 0; }
+        .area-tag-card { font-size: 0.8em; color: var(--primary-dark); background: #eef2f6; padding: 4px 10px; border-radius: 6px; font-weight: 700; margin-top: 5px; display: inline-block; }
 
-        .oportunidad-tipo-card { font-size: 1.2em; font-weight: 700; margin: 10px 0; color: var(--text-main); }
-        .ver-detalles-link { color: var(--primary-dark); font-weight: 700; font-size: 0.85em; margin-top: auto; }
+        .oportunidad-tipo-card { font-size: 1.3em; font-weight: 800; margin: 15px 0; color: var(--text-main); line-height: 1.2; }
+        .ver-detalles-link { color: var(--primary-dark); font-weight: 700; font-size: 0.9em; margin-top: auto; }
 
-        /* --- MODAL --- */
+        /* --- MODAL DETALLADO --- */
         .modal-overlay {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(32, 44, 68, 0.9);
-            z-index: 1000;
-            backdrop-filter: blur(8px);
-            overflow-y: auto;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(32, 44, 68, 0.92);
+            z-index: 1000; backdrop-filter: blur(6px);
+            overflow-y: auto; padding: 20px;
         }
 
         .modal-content {
             background: var(--white);
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 40px;
-            border-radius: 24px;
-            position: relative;
+            max-width: 850px; margin: 30px auto;
+            padding: 40px; border-radius: 25px;
+            position: relative; animation: slideIn 0.3s ease;
         }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .close-modal {
             position: absolute; top: 20px; right: 25px;
-            font-size: 2em; color: var(--text-muted);
+            font-size: 2.5em; color: var(--text-muted);
             cursor: pointer; background: none; border: none;
         }
 
-        .modal-header-detail { display: flex; align-items: center; gap: 25px; border-bottom: 1px solid #eee; padding-bottom: 25px; margin-bottom: 25px; }
-        .empresa-logo-modal { width: 90px; height: 90px; object-fit: contain; border-radius: 12px; border: 1px solid #f0f0f0; }
+        .modal-header-detail { display: flex; align-items: center; gap: 25px; border-bottom: 1px solid #eee; padding-bottom: 30px; margin-bottom: 30px; }
+        .empresa-logo-modal { width: 100px; height: 100px; object-fit: contain; border-radius: 15px; border: 1px solid #f0f0f0; }
         
-        .modal-body { display: grid; grid-template-columns: 2fr 1.2fr; gap: 30px; }
+        .modal-body { display: grid; grid-template-columns: 1.8fr 1fr; gap: 35px; }
         
-        .info-label { font-weight: 800; color: var(--primary-dark); font-size: 0.85em; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .info-text { margin-bottom: 25px; color: #444; white-space: pre-line; line-height: 1.6; }
+        .info-label { font-weight: 800; color: var(--primary-dark); font-size: 0.85em; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+        .info-text { margin-bottom: 25px; color: #444; white-space: pre-line; line-height: 1.6; font-size: 1.05em; }
 
-        .sidebar-info { background: #f8fafc; padding: 25px; border-radius: 16px; }
-        .sidebar-item { margin-bottom: 15px; }
+        .sidebar-info { background: #f8fafc; padding: 25px; border-radius: 20px; align-self: start; }
+        .sidebar-item { margin-bottom: 20px; }
 
         .box-postulacion {
             grid-column: 1 / -1;
             background: #eefdf3;
             border: 1px solid #c3e6cb;
-            padding: 25px;
-            border-radius: 16px;
-            margin-top: 10px;
+            padding: 30px; border-radius: 20px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-body { grid-template-columns: 1fr; }
+            h1.main-title { font-size: 2.2em; }
         }
     </style>
 </head>
@@ -164,12 +138,140 @@
     <header class="page-header">
         <div class="header-content">
             <img src="CDI Logo Color.png" alt="CDI Uandes" class="logo-cdi" onerror="this.style.display='none'">
-            <br>
-            <div class="tag-oficial">PLATAFORMA DE OPORTUNIDADES 2026</div>
             <h1 class="main-title">Bolsa de Trabajo<br>Ingeniería Uandes</h1>
-            <p class="sub-title">Encuentra prácticas, pasantías y ofertas laborales exclusivas para la comunidad CDI.</p>
+            <p style="color: #666; font-size: 1.1em;">Plataforma Oficial de Oportunidades Laborales</p>
         </div>
     </header>
 
     <main class="container">
-        <div id="grid
+        <div id="grid-ofertas" class="grid-ofertas">
+            <p style="text-align: center; grid-column: 1/-1; padding: 50px;">Cargando ofertas disponibles...</p>
+        </div>
+    </main>
+
+    <div id="modal-oferta" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal" class="close-modal">&times;</button>
+            
+            <div class="modal-header-detail">
+                <img id="modal-logo" src="" alt="" class="empresa-logo-modal">
+                <div>
+                    <h2 id="modal-empresa" style="margin:0; font-size: 2em; color: var(--primary-dark);"></h2>
+                    <p id="modal-tipo-oportunidad" style="margin:5px 0; color:var(--text-muted); font-weight: 700; font-size: 1.1em;"></p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="main-col">
+                    <span class="info-label">Descripción del Cargo</span>
+                    <p id="modal-descripcion" class="info-text"></p>
+                    
+                    <span class="info-label">Perfiles buscados</span>
+                    <p id="modal-perfiles" class="info-text"></p>
+                    
+                    <span class="info-label">Requisitos</span>
+                    <p id="modal-requisitos" class="info-text"></p>
+                </div>
+
+                <div class="sidebar-info">
+                    <div class="sidebar-item">
+                        <span class="info-label">Área</span>
+                        <span id="modal-area" style="font-weight: 600;"></span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="info-label">Modalidad</span>
+                        <span id="modal-modalidad" style="font-weight: 600;"></span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="info-label">Ubicación</span>
+                        <span id="modal-ubicacion" style="font-weight: 600;"></span>
+                    </div>
+                </div>
+
+                <div class="box-postulacion">
+                    <h4 style="margin:0 0 10px 0; color: #155724; font-size: 1.2em;">¿Cómo postular?</h4>
+                    <p id="modal-como-postular" style="margin:0; color: #155724; line-height: 1.5;"></p>
+                    <p style="font-size: 0.85em; margin-top: 15px; color: #155724; opacity: 0.8; font-style: italic;">* Esta plataforma es informativa. Sigue las instrucciones indicadas arriba.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // EL LINK CORREGIDO QUE TERMINA EN CSV PARA QUE CARGUEN LAS TARJETAS
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwWDw8GNI--K8ZBOH9T0MqalLG2ogne5ihiFCqwiy6rK7HgEH4niXPB53T0cr_U6JgA8Or3LnNqbsO/pub?output=csv';
+
+        const grid = document.getElementById('grid-ofertas');
+        const modal = document.getElementById('modal-oferta');
+
+        function cargarDatos() {
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    const data = results.data.filter(f => f.Empresa && f.Empresa.trim() !== "");
+                    grid.innerHTML = ''; 
+
+                    if(data.length === 0) {
+                        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No se encontraron ofertas en el Excel.</p>';
+                        return;
+                    }
+
+                    data.forEach(oferta => {
+                        const card = document.createElement('div');
+                        card.className = 'card-oferta';
+                        const logoURL = oferta['Logo (link imagen)'] || 'https://via.placeholder.com/60';
+                        
+                        card.innerHTML = `
+                            <div class="card-header">
+                                <img src="${logoURL}" class="empresa-logo-card">
+                                <div>
+                                    <h3 class="empresa-nombre-card">${oferta.Empresa}</h3>
+                                    <span class="area-tag-card">${oferta['Área'] || 'Ingeniería'}</span>
+                                </div>
+                            </div>
+                            <h2 class="oportunidad-tipo-card">${oferta['Tipo oportunidades'] || 'Oferta Laboral'}</h2>
+                            <div class="ver-detalles-link">Ver detalles de la oferta →</div>
+                        `;
+                        card.onclick = () => abrirModal(oferta);
+                        grid.appendChild(card);
+                    });
+                },
+                error: function() {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Error al conectar con Google Sheets. Asegúrate de que el Excel esté publicado.</p>';
+                }
+            });
+        }
+
+        function abrirModal(o) {
+            document.getElementById('modal-empresa').innerText = o.Empresa;
+            document.getElementById('modal-logo').src = o['Logo (link imagen)'] || 'https://via.placeholder.com/100';
+            document.getElementById('modal-tipo-oportunidad').innerText = o['Tipo oportunidades'];
+            document.getElementById('modal-descripcion').innerText = o['Descripción'] || 'Sin descripción disponible.';
+            document.getElementById('modal-perfiles').innerText = o['Perfiles buscados'] || 'No especificado.';
+            document.getElementById('modal-requisitos').innerText = o['Requisitos'] || 'No especificado.';
+            document.getElementById('modal-area').innerText = o['Área'];
+            document.getElementById('modal-modalidad').innerText = o['Modalidad'];
+            document.getElementById('modal-ubicacion').innerText = o['Ubicación'];
+            
+            let instrucciones = o['Cómo postular'] || 'Contactar directamente a la empresa.';
+            if(o['Correo']) instrucciones += '\n\n📧 Correo: ' + o['Correo'];
+            if(o['Link postulación'] && o['Link postulación'] !== '#') instrucciones += '\n\n🔗 Link: ' + o['Link postulación'];
+            
+            document.getElementById('modal-como-postular').innerText = instrucciones;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        document.getElementById('close-modal').onclick = () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        window.onclick = (e) => { if(e.target == modal) document.getElementById('close-modal').onclick(); };
+
+        // Iniciar carga
+        cargarDatos();
+    </script>
+</body>
+</html>
