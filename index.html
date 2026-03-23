@@ -16,7 +16,7 @@
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-light); margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-light); margin: 0; padding: 0; }
 
         /* --- HEADER --- */
         .page-header {
@@ -27,15 +27,10 @@
             overflow: hidden;
             border-bottom: 1px solid #eaeaea;
         }
-        .page-header::before {
-            content: ''; position: absolute; background: var(--accent-light);
-            width: 250px; height: 250px; border-radius: 50%;
-            top: -100px; left: -100px; opacity: 0.4;
-        }
         .logo-cdi { max-width: 140px; margin-bottom: 15px; position: relative; z-index: 2; }
         h1.main-title { font-size: 3em; font-weight: 800; color: var(--primary-dark); margin: 10px 0; position: relative; z-index: 2; }
 
-        /* --- GRID --- */
+        /* --- GRID DE CARDS --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         .grid-ofertas { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
 
@@ -46,7 +41,7 @@
         }
         .card-oferta:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
         .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .empresa-logo-card { width: 55px; height: 55px; object-fit: contain; border-radius: 10px; border: 1px solid #eee; background: #fff; }
+        .empresa-logo-card { width: 65px; height: 65px; object-fit: contain; border-radius: 10px; border: 1px solid #eee; background: #fff; }
         .empresa-nombre-card { font-weight: 700; font-size: 1.1em; color: var(--text-main); margin: 0; }
         .area-tag-card { font-size: 0.8em; color: var(--primary-dark); background: #eef2f6; padding: 4px 10px; border-radius: 6px; font-weight: 700; margin-top: 5px; display: inline-block; }
         .oportunidad-tipo-card { font-size: 1.3em; font-weight: 800; margin: 15px 0; color: var(--text-main); line-height: 1.2; }
@@ -77,7 +72,6 @@
         <div class="header-content">
             <img src="CDI Logo Color.png" alt="CDI Uandes" class="logo-cdi" onerror="this.style.display='none'">
             <h1 class="main-title">Bolsa de Trabajo<br>Ingeniería Uandes</h1>
-            <p style="color: #666;">Plataforma Oficial de Oportunidades 2026</p>
         </div>
     </header>
 
@@ -89,7 +83,7 @@
 
     <div id="modal-oferta" class="modal-overlay">
         <div class="modal-content">
-            <button id="close-modal" class="close-modal">&times;</button>
+            <button id="close-modal" class="close-modal">×</button>
             <div class="modal-header-detail">
                 <img id="modal-logo" src="" class="empresa-logo-modal">
                 <div>
@@ -105,9 +99,9 @@
                     <p id="modal-requisitos" class="info-text"></p>
                 </div>
                 <div class="sidebar-info">
-                    <div style="margin-bottom:15px"><span class="info-label">Área</span><span id="modal-area"></span></div>
-                    <div style="margin-bottom:15px"><span class="info-label">Modalidad</span><span id="modal-modalidad"></span></div>
-                    <div style="margin-bottom:15px"><span class="info-label">Ubicación</span><span id="modal-ubicacion"></span></div>
+                    <div style="margin-bottom:15px"><span class="info-label">Área</span><br><span id="modal-area"></span></div>
+                    <div style="margin-bottom:15px"><span class="info-label">Modalidad</span><br><span id="modal-modalidad"></span></div>
+                    <div style="margin-bottom:15px"><span class="info-label">Ubicación</span><br><span id="modal-ubicacion"></span></div>
                 </div>
                 <div class="box-postulacion">
                     <h4 style="margin:0 0 10px 0; color: #155724;">¿Cómo postular?</h4>
@@ -118,17 +112,22 @@
     </div>
 
     <script>
+        // Link del Excel en formato CSV
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwWDw8GNI--K8ZBOH9T0MqalLG2ogne5ihiFCqwiy6rK7HgEH4niXPB53T0cr_U6JgA8Or3LnNqbsO/pub?output=csv';
 
-        // FUNCIÓN MÁGICA: Convierte links de Drive en imágenes reales
-        function corregirLinkDrive(url) {
-            if (!url || !url.includes('drive.google.com')) return url || 'https://via.placeholder.com/100';
-            try {
-                const id = url.split('/d/')[1].split('/')[0];
+        // FUNCIÓN PARA REPARAR LINKS DE DRIVE
+        function obtenerLinkImagenDirecto(url) {
+            if (!url) return 'https://via.placeholder.com/150?text=Logo';
+            if (url.includes('drive.google.com')) {
+                let id = '';
+                if (url.includes('/d/')) {
+                    id = url.split('/d/')[1].split('/')[0];
+                } else if (url.includes('id=')) {
+                    id = url.split('id=')[1].split('&')[0];
+                }
                 return `https://lh3.googleusercontent.com/d/${id}`;
-            } catch (e) {
-                return url;
             }
+            return url;
         }
 
         function cargarDatos() {
@@ -139,36 +138,45 @@
                     const data = results.data.filter(f => f.Empresa);
                     const grid = document.getElementById('grid-ofertas');
                     grid.innerHTML = '';
+                    
                     data.forEach(o => {
                         const card = document.createElement('div');
                         card.className = 'card-oferta';
-                        const imgFixed = corregirLinkDrive(o['Logo']);
+                        const imgUrl = obtenerLinkImagenDirecto(o['Logo']);
+                        
                         card.innerHTML = `
                             <div class="card-header">
-                                <img src="${imgFixed}" class="empresa-logo-card" onerror="this.src='https://via.placeholder.com/60'">
-                                <div><h3 class="empresa-nombre-card">${o.Empresa}</h3><span class="area-tag-card">${o['Área']}</span></div>
+                                <img src="${imgUrl}" class="empresa-logo-card" onerror="this.src='https://via.placeholder.com/65?text=Logo'">
+                                <div>
+                                    <h3 class="empresa-nombre-card">${o.Empresa}</h3>
+                                    <span class="area-tag-card">${o['Área'] || 'Ingeniería'}</span>
+                                </div>
                             </div>
                             <h2 class="oportunidad-tipo-card">${o['Tipo oportunidades'] || 'Oferta'}</h2>
                             <div class="ver-detalles-link">Ver detalles →</div>
                         `;
-                        card.onclick = () => abrir(o);
+                        card.onclick = () => abrirModal(o);
                         grid.appendChild(card);
                     });
                 }
             });
         }
 
-        function abrir(o) {
+        function abrirModal(o) {
             document.getElementById('modal-empresa').innerText = o.Empresa;
-            document.getElementById('modal-logo').src = corregirLinkDrive(o['Logo']);
+            document.getElementById('modal-logo').src = obtenerLinkImagenDirecto(o['Logo']);
             document.getElementById('modal-tipo-oportunidad').innerText = o['Tipo oportunidades'];
-            document.getElementById('modal-descripcion').innerText = o['Descripción'];
+            document.getElementById('modal-descripcion').innerText = o['Descripción'] || 'Sin descripción.';
             document.getElementById('modal-requisitos').innerText = (o['Perfiles buscados'] || '') + '\n\n' + (o['Requisitos'] || '');
             document.getElementById('modal-area').innerText = o['Área'];
             document.getElementById('modal-modalidad').innerText = o['Modalidad'];
             document.getElementById('modal-ubicacion').innerText = o['Ubicación'];
-            document.getElementById('modal-como-postular').innerText = (o['Cómo postular'] || '') + (o['Correo'] ? '\nContacto: ' + o['Correo'] : '');
             
+            let postula = o['Cómo postular'] || '';
+            if(o['Correo']) postula += '\n\nContacto: ' + o['Correo'];
+            if(o['Link postulación'] && o['Link postulación'] !== '#') postula += '\n\nEnlace: ' + o['Link postulación'];
+            
+            document.getElementById('modal-como-postular').innerText = postula || 'Sigue las instrucciones de la empresa.';
             document.getElementById('modal-oferta').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -176,6 +184,12 @@
         document.getElementById('close-modal').onclick = () => {
             document.getElementById('modal-oferta').style.display = 'none';
             document.body.style.overflow = 'auto';
+        };
+
+        window.onclick = (e) => {
+            if (e.target == document.getElementById('modal-oferta')) {
+                document.getElementById('close-modal').onclick();
+            }
         };
 
         cargarDatos();
